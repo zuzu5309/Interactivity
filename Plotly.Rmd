@@ -50,12 +50,38 @@ airbnb %>%
 
 ### Plotly boxplot
 
-put color for each neighbourhood
+color = ~neighbourhood + colors = "Set2": put color for each neighbourhood
 
 ```{r}
 airbnb %>%
   mutate(neighbourhood = forcats::fct_reorder(neighbourhood, price)) %>%
   plot_ly(x = ~neighbourhood, y = ~price, color = ~neighbourhood, colors = "Set2", type = "box") 
 ```
+
+
+### Plotly barchart
+
+```{r}
+airbnb %>% 
+  count(neighbourhood) %>% 
+  mutate(neighbourhood = fct_reorder(neighbourhood, n)) %>% 
+  plot_ly(x = ~neighbourhood, y = ~n, color = ~neighbourhood, type = "bar")
+```
+
+
+### ggplotly
+
+```{r}
+library(ggplot2)
+scatter_ggplot = airbnb %>%
+  ggplot(aes(x = longitude, y = latitude, color = price)) +
+  geom_point(alpha = 0.25) +
+  scale_color_viridis() +
+  coord_cartesian() +
+  theme_classic()
+
+ggplotly(scatter_ggplot)
+```
+
 
 
