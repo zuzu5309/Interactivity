@@ -1,0 +1,61 @@
+---
+title: "Plotly"
+author: "Zuzu"
+date: "November 1, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dataset
+
+```{r}
+library(readr)
+library(janitor)
+library(stringr)
+library(forcats)
+library(viridis)
+library(plotly)
+```
+
+```{r}
+airbnb = read_csv("./data/nyc_airbnb.zip") %>%
+  clean_names() %>%
+  rename(boro = neighbourhood_group) %>%
+  filter(boro == "Manhattan", room_type =="Entire home/apt", price > 100 & price < 400)
+```
+
+### Plotly Scatterplot
+
+plotly::plot_ly: initiate plotly visualization
+
+main thing: put the aesthetics
+
+mode = marker: give me a scatterplot where individual point shows as a point
+
+color = ~price:plot price use different color
+
+text = : the text you want to show when you scolling on the point in the graph 
+
+"\nRating": the "\n" means creating a new line 
+
+```{r}
+library(tidyverse)
+airbnb %>% 
+  mutate(hover_text = str_c("Price: $", price,"\nRating:", review_scores_location / 2)) %>%
+  plot_ly(x = ~longitude, y = ~latitude, color = ~price, text = ~hover_text, type = "scatter", mode = "marker", alpha = 0.5)
+```
+
+### Plotly boxplot
+
+put color for each neighbourhood
+
+```{r}
+airbnb %>%
+  mutate(neighbourhood = forcats::fct_reorder(neighbourhood, price)) %>%
+  plot_ly(x = ~neighbourhood, y = ~price, color = ~neighbourhood, colors = "Set2", type = "box") 
+```
+
+
